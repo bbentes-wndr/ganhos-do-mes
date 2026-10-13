@@ -374,7 +374,7 @@ label.chk input{width:18px;height:18px;margin:0;accent-color:var(--ac)}
 header.top{position:relative}
 .conta-menu{position:absolute;right:0;top:100%;z-index:30;display:flex;flex-direction:column;min-width:220px;margin-top:6px;padding:6px;background:var(--card);border:1px solid var(--line2);box-shadow:0 14px 40px rgba(0,0,0,.5)}
 #contaBtn .pend-n,.conta-menu .pend-n{display:inline-block;margin-left:6px;padding:1px 6px;background:var(--ac);color:var(--ac-ink);font:700 10px var(--mono);border-radius:8px}
-.conta-menu>a{display:block;padding:10px;font:500 14px var(--font);color:var(--ac);text-decoration:none}.conta-menu>a:hover{background:var(--raise)}
+.conta-menu>a{display:block;padding:10px;font:500 14px var(--font);color:var(--ac);text-decoration:none}.conta-menu>a:hover{background:var(--raise)}.conta-menu>a.neutro{color:var(--fg)}
 .conta-menu>button,.conta-menu .imp-l{display:block;width:100%;text-align:left;padding:10px;font:500 14px var(--font);letter-spacing:0;text-transform:none;color:var(--fg);cursor:pointer;flex-direction:row}
 .conta-menu>button:hover,.conta-menu .imp-l:hover{background:var(--raise)}
 .conta-mail{font:500 10px var(--mono);color:var(--mut);padding:6px 10px 8px;border-bottom:1px solid var(--line);margin-bottom:4px;overflow-wrap:anywhere}
@@ -409,7 +409,7 @@ body.deslogado main{visibility:hidden}
   <header class="top">
     <div><h1>Ganhos do Mês</h1><p id="mesAtual">&nbsp;</p></div>
     <div class="hdr-acts"><button type="button" class="a" id="agBtn" title="Google Agenda">Conectar agenda</button><button type="button" class="a" id="contaBtn" aria-haspopup="menu" aria-expanded="false">Conta</button><button class="btn" id="novo" type="button">+ Novo Trabalho</button></div>
-    <div class="conta-menu" id="contaMenu" role="menu" hidden><span class="conta-mail" id="contaMail"></span><button type="button" role="menuitem" id="impAg">Importar da agenda</button><button type="button" role="menuitem" id="expJ">Baixar meus dados</button><label class="imp-l" role="menuitem">Restaurar dados<input type="file" id="impJ" accept="application/json" hidden></label><a role="menuitem" id="adminL" href="admin.html" hidden>Usuários do site<span class="pend-n" id="pendN" hidden></span></a><button type="button" role="menuitem" id="sair">Sair</button></div>
+    <div class="conta-menu" id="contaMenu" role="menu" hidden><span class="conta-mail" id="contaMail"></span><button type="button" role="menuitem" id="impAg">Importar da agenda</button><button type="button" role="menuitem" id="expJ">Baixar meus dados</button><label class="imp-l" role="menuitem">Restaurar dados<input type="file" id="impJ" accept="application/json" hidden></label><a role="menuitem" id="adminL" href="admin.html" hidden>Usuários do site<span class="pend-n" id="pendN" hidden></span></a><a role="menuitem" class="neutro" href="privacidade.html">Privacidade</a><button type="button" role="menuitem" id="sair">Sair</button></div>
   </header>
 
   <section class="hero" aria-label="Resumo do mês">

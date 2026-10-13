@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Usuários · Ganhos do Mês</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chivo:wght@400..900&family=Chivo+Mono:wght@400..700&display=swap">
+<style>
+:root{--bg:#13110F;--card:#1D1A17;--sunk:#0D0C0A;--raise:#26221E;--fg:#EDE4D6;--mut:#A3978A;--soft:#CFC4B4;--line:rgba(237,228,214,.12);--line2:rgba(237,228,214,.3);--ac:#EFA64A;--ac-ink:#1A1208;--grn:#6DB5A0;--red:#E4583E;--font:Chivo,"Helvetica Neue",sans-serif;--mono:"Chivo Mono",ui-monospace,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 var(--font)}
+main{max-width:980px;margin:0 auto;padding:28px 16px 64px}
+header{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+h1{margin:0;font-size:28px;font-weight:900;text-transform:uppercase}a{color:var(--ac)}
+.k{font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.filtros{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.filtros button,.btn{font:inherit;cursor:pointer;border:1px solid var(--line2);background:transparent;color:var(--fg);padding:8px 12px}
+.filtros button.on{background:var(--fg);color:var(--bg)}
+.btn.ok{background:var(--grn);border-color:var(--grn);color:#0b1a15;font-weight:700}.btn.no{color:var(--red);border-color:var(--red)}
+table{width:100%;border-collapse:collapse;background:var(--sunk);border:1px solid var(--line)}
+th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font:500 10px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+td small{display:block;color:var(--mut);font:500 11px var(--mono)}
+.st{font:500 11px var(--mono);text-transform:uppercase}.st.pendente{color:var(--ac)}.st.aprovado{color:var(--grn)}.st.bloqueado{color:var(--red)}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+input,select{font:inherit;background:var(--card);color:var(--fg);border:1px solid var(--line);padding:6px 8px;width:100%;min-width:0}
+#msg{color:var(--soft);margin:16px 0}
+@media (max-width:720px){thead{display:none}tr{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:10px;border-bottom:1px solid var(--line)}td{border:0;padding:2px}td:first-child,td:last-child{grid-column:1/-1}}
+</style></head><body><main>
+<header><div><span class="k">Ganhos do Mês</span><h1>Usuários do site</h1></div><a href="./">← Voltar pro hub</a></header>
+<div class="filtros" id="filtros"></div>
+<div id="msg">Carregando…</div>
+<table id="tab" hidden><thead><tr><th>Pessoa</th><th>Status</th><th>Plano</th><th>Válido até</th><th></th></tr></thead><tbody></tbody></table>
+</main>
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+const $=id=>document.getElementById(id),CFG=window.GANHOS_CONFIG||{};
+let sb,lista=[],filtro="pendente";
+const fd=t=>t?new Date(t).toLocaleDateString("pt-BR",{timeZone:"America/Sao_Paulo"}):"—";
+function desenhar(){
+  const f=$("filtros");f.innerHTML="";
+  [["pendente","Pendentes"],["aprovado","Aprovados"],["bloqueado","Bloqueados"],["","Todos"]].forEach(([v,t])=>{const n=v?lista.filter(p=>p.status===v).length:lista.length;
+    const b=document.createElement("button");b.type="button";b.textContent=t+" ("+n+")";b.className=v===filtro?"on":"";b.onclick=()=>{filtro=v;desenhar()};f.appendChild(b)});
+  const vis=lista.filter(p=>!filtro||p.status===filtro),tb=$("tab").querySelector("tbody");tb.innerHTML="";
+  $("tab").hidden=!vis.length;$("msg").textContent=vis.length?"":"Ninguém aqui.";
+  vis.forEach(p=>{const tr=document.createElement("tr");
+    tr.innerHTML=`<td><b></b><small></small><small></small></td><td><span class="st ${p.status}">${p.status}</span></td><td><select aria-label="Plano"><option value="gratis">Grátis</option><option value="pago">Pago</option><option value="cortesia">Cortesia</option></select></td><td><input type="date" aria-label="Válido até"></td><td class="acts"></td>`;
+    tr.querySelector("b").textContent=p.nome||"(sem nome)";const sm=tr.querySelectorAll("small");sm[0].textContent=p.email||"";sm[1].textContent="Entrou "+fd(p.criado_em)+" · último acesso "+fd(p.visto_em);
+    const sel=tr.querySelector("select");if(![...sel.options].some(o=>o.value===p.plano))sel.add(new Option(p.plano,p.plano));sel.value=p.plano||"gratis";
+    const dt=tr.querySelector("input");dt.value=p.validade||"";
+    sel.onchange=()=>salvar(p,{plano:sel.value});dt.onchange=()=>salvar(p,{validade:dt.value||null});
+    const a=tr.querySelector(".acts"),bt=(t,c,patch)=>{const b=document.createElement("button");b.type="button";b.className="btn "+c;b.textContent=t;b.onclick=()=>salvar(p,patch);a.appendChild(b)};
+    if(p.status!=="aprovado")bt("Aprovar","ok",{status:"aprovado"});
+    if(p.status!=="bloqueado")bt("Bloquear","no",{status:"bloqueado"});
+    if(p.status==="bloqueado")bt("Voltar pra pendente","",{status:"pendente"});
+    tb.appendChild(tr)})}
+async function salvar(p,patch){const {error}=await sb.from("perfis").update(patch).eq("user_id",p.user_id);if(error){alert("Não deu pra salvar: "+error.message);return}Object.assign(p,patch);desenhar()}
+async function carregar(){const {data,error}=await sb.from("perfis").select("*").order("criado_em",{ascending:false});
+  if(error){$("msg").textContent="Erro: "+error.message;return}lista=data;desenhar()}
+(async()=>{
+  if(!window.supabase||!CFG.SUPABASE_URL){$("msg").textContent="Configure o config.js.";return}
+  sb=supabase.createClient(CFG.SUPABASE_URL,CFG.SUPABASE_ANON_KEY);
+  const {data:{session}}=await sb.auth.getSession();if(!session){location.href="./";return}
+  const {data:adm}=await sb.rpc("eh_admin");if(!adm){$("msg").textContent="Esta página é só do administrador.";return}
+  await carregar();
+  try{sb.channel("perfis").on("postgres_changes",{event:"*",schema:"public",table:"perfis"},carregar).subscribe()}catch(e){}
+})();
+</script></body></html>

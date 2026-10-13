@@ -29,7 +29,7 @@ input,select{font:inherit;background:var(--card);color:var(--fg);border:1px soli
 <table id="tab" hidden><thead><tr><th>Pessoa</th><th>Status</th><th>Plano</th><th>Válido até</th><th></th></tr></thead><tbody></tbody></table>
 </main>
 <script src="config.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" integrity="sha384-0w2KAL2YHP6wKOkUDzkCDGgVvfmHnj02DHeQ6XcHOgTfFsGyonKOpShMH1x6nk9o" crossorigin="anonymous"></script>
 <script>
 const $=id=>document.getElementById(id),CFG=window.GANHOS_CONFIG||{};
 let sb,lista=[],filtro="pendente";

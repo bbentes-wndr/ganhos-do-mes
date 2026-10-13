@@ -41,7 +41,7 @@ Reserve uns 40 minutos. Os nomes dos menus podem mudar um pouco com o tempo; se 
 
 1. Entre em **supabase.com** e clique em **New project**.
 2. Em *Region*, escolha **South America (São Paulo)**. Crie uma senha forte e guarde.
-3. Abra o `schema.sql` num editor de texto e troque `SEU-EMAIL@gmail.com` pelo seu e-mail do Google. É ele que vira o administrador.
+3. Abra o `schema.sql` num editor de texto e confira o e-mail do administrador (linha do `insert into public.admins`). É ele que vira o administrador.
 4. No Supabase, abra o menu **SQL Editor**, cole todo o conteúdo do `schema.sql` e clique em **Run**. Deve aparecer *Success*.
 5. Abra **Project Settings → API** (ou **Data API**) e anote:
    - **Project URL** (ex.: `https://abcd.supabase.co`), que é o **SEU-SUPABASE**;
